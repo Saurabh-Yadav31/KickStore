@@ -32,7 +32,7 @@ This is an **initial version** with core functionality implemented. Future enhan
 
 ### Step 1: Clone or Download
 ```bash
-git clone https://github.com/yourusername/KickStore.git
+git clone https://github.com/Saurabh-Yadav31/KickStore.git
 cd KickStore
 ```
 
