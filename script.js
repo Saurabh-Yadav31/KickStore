@@ -3,6 +3,7 @@
 // =====================================================
 
 // ---------- DOM ELEMENTS ----------
+const searchForm = document.getElementById("search-form");
 const searchInput = document.getElementById("search-input");
 const categoryButtons = document.querySelectorAll("#category-filters button");
 const productsGrid = document.getElementById("products-grid");
@@ -13,6 +14,8 @@ const resetButton = document.getElementById("reset-button");
 // ---------- APP STATE ----------
 let selectedCategory = "All";
 let currentSearchTerm = "";
+let products = [];
+const apiBaseUrl = "http://localhost:5000";
 
 // ---------- HELPER: FORMAT PRICE ----------
 function formatPrice(price) {
@@ -102,10 +105,67 @@ function updateUI() {
 }
 
 // ---------- SEARCH INPUT ----------
-searchInput.addEventListener("input", () => {
-  currentSearchTerm = searchInput.value.trim();
+// Debounce helper
+function debounce(fn, wait) {
+  let t;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), wait);
+  };
+}
+
+// Perform search against backend (or fallback to local data)
+async function performSearch() {
+  const q = currentSearchTerm.trim();
+  const category = selectedCategory;
+
+  // Build endpoint
+  const params = new URLSearchParams();
+  if (q) params.set('q', q);
+  if (category && category !== 'All') params.set('category', category);
+
+  const url = params.toString()
+    ? `${apiBaseUrl}/api/products/search?${params.toString()}`
+    : `${apiBaseUrl}/api/products`;
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('API error');
+    products = await res.json();
+  } catch (err) {
+    console.warn('Search failed, using local data fallback', err);
+    if (typeof window !== 'undefined' && window.productsData) products = window.productsData;
+  }
+
   updateUI();
+}
+
+const debouncedSearch = debounce(performSearch, 300);
+
+searchInput.addEventListener('input', () => {
+  currentSearchTerm = searchInput.value;
+  debouncedSearch();
 });
+
+// ---------- FETCH PRODUCTS ----------
+async function fetchProducts() {
+  try {
+    const response = await fetch(`${apiBaseUrl}/api/products`);
+    if (!response.ok) {
+      throw new Error("API response not OK");
+    }
+    products = await response.json();
+  } catch (error) {
+    console.warn("Failed to load products from backend, using local data.", error);
+    if (typeof window !== "undefined" && window.productsData) {
+      products = window.productsData;
+    }
+  }
+  updateUI();
+}
+
+// ---------- INITIAL FETCH ----------
+fetchProducts();
 
 // ---------- CATEGORY BUTTONS ----------
 categoryButtons.forEach((button) => {
@@ -114,7 +174,8 @@ categoryButtons.forEach((button) => {
     button.classList.add("active");
 
     selectedCategory = button.dataset.category;
-    updateUI();
+      // trigger a server-side search when category changes
+      performSearch();
   });
 });
 
@@ -126,9 +187,6 @@ resetButton.addEventListener("click", () => {
 
   categoryButtons.forEach((btn) => btn.classList.remove("active"));
   categoryButtons[0].classList.add("active");
-
-  updateUI();
+  // reload from server / fallback
+  performSearch();
 });
-
-// ---------- INITIAL RENDER ----------
-updateUI();

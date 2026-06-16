@@ -1,7 +1,8 @@
 // data.js
 // Single source of truth for all KickStore product data.
 
-const products = [
+(function(){
+  const productsLocal = [
 
   // ── JERSEYS ────────────────────────────────────────────────
   {
@@ -163,4 +164,15 @@ const products = [
     image: "./images/messi-poster.jpeg"
   }
 
-];
+  ];
+
+  // Expose to browser fallback
+  if (typeof window !== "undefined") {
+    window.productsData = productsLocal;
+  }
+
+  // Export for Node.js (used by backend seed script)
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = productsLocal;
+  }
+})();
