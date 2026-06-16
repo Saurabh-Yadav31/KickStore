@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KickStore | We Are 26</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- =========================
+       STICKY HEADER + SEARCH
+  ========================== -->
+  <header class="site-header">
+    <div class="container">
+      <h1>⚽ KickStore - We Are 26</h1>
+      <p>Premium Football Merchandise | Official & Authentic</p>
+
+      <form id="search-form" role="search" aria-label="Product search">
+        <label for="search-input">Search products</label>
+        <span class="search-icon">⌕</span>
+        <input
+          type="search"
+          id="search-input"
+          name="search"
+          placeholder="Search jerseys, balls, boots..."
+          aria-label="Search products by name"
+          autocomplete="off"
+        />
+      </form>
+    </div>
+  </header>
+
+  <!-- =========================
+       MAIN CONTENT
+  ========================== -->
+  <main class="container">
+
+    <!-- =========================
+         CATEGORY FILTERS
+    ========================== -->
+    <section class="filter-section" aria-labelledby="filter-heading">
+      <h2 id="filter-heading">Categories</h2>
+
+      <div id="category-filters" class="filter-buttons">
+        <button type="button" class="active" data-category="All">All</button>
+        <button type="button" data-category="Jerseys">Jerseys</button>
+        <button type="button" data-category="Footballs">Footballs</button>
+        <button type="button" data-category="Boots">Boots</button>
+        <button type="button" data-category="Scarves & Caps">Scarves & Caps</button>
+        <button type="button" data-category="Posters & Collectibles">Posters & Collectibles</button>
+      </div>
+    </section>
+
+    <!-- =========================
+         RESULTS
+    ========================== -->
+    <section class="results-section" aria-labelledby="results-heading">
+      <div class="results-header">
+        <h2 id="results-heading">Products</h2>
+        <p id="results-count" aria-live="polite">Showing 15 products</p>
+      </div>
+
+      <!-- Product cards will be rendered here using JavaScript -->
+      <div id="products-grid" class="products-grid"></div>
+
+      <!-- =========================
+           EMPTY STATE
+      ========================== -->
+      <div id="empty-state" class="empty-state hidden">
+        <div class="empty-graphic" aria-hidden="true">⚽</div>
+        <h3>No Match Found</h3>
+        <p>We couldn't find any products matching your search. Try adjusting your filters or search terms.</p>
+        <button id="reset-button" class="reset-button" type="button">
+          View All Products
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================
+       SCRIPTS
+  ========================== -->
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
