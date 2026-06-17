@@ -1,317 +1,297 @@
- # KickStore - Premium Football Merchandise Search App
+# KickStore - Premium Football Merchandise Search App
 
-## 📖 Application Overview
+## Overview
 
-**KickStore** is a modern, intuitive product search application inspired by the ongoing FIFA World Cup 2026. The application showcases premium football merchandise including official jerseys, match balls, boots, and collectibles from top international teams.
+**KickStore** is a product search application for football merchandise. It allows users to browse and search products by name, filter by category, view results in a responsive product grid, and handle no-result cases gracefully.
 
-### Concept & Motivation
-The motivation for KickStore stems from the excitement and global engagement surrounding the FIFA World Cup. With billions of football fans worldwide, there's a growing demand for accessible, user-friendly platforms to browse and discover official football merchandise. This application demonstrates a clean, premium storefront experience specifically designed for football enthusiasts and collectors.
+### Motivation
 
-### Current Status
-This is an **initial version** with core functionality implemented. Future enhancements will include backend integration, user accounts, cart functionality, and payment processing.
+I built KickStore to create a clean and user-friendly football merchandise discovery experience inspired by the excitement around international football tournaments. The goal was to take a simple product search assignment and present it through a polished, modern storefront UI while keeping the core experience fast, intuitive, and easy to use.
 
----
+### Status
 
-## ✨ Features Implemented
-
-- ✅ **Product Storage** - Comprehensive local product database with 15+ items
-- ✅ **Real-time Search** - Case-insensitive product name search with instant results
-- ✅ **Category Filtering** - Filter by Jerseys, Footballs, Boots, Scarves & Caps, and Collectibles
-- ✅ **Dynamic Results Display** - Product grid with detailed cards showing name, price, stock status, and ratings
-- ✅ **One-time fetch + local filtering** - Initial backend load then local search/category filtering for faster interaction
-- ✅ **Empty State Handling** - User-friendly "No Match Found" message with reset functionality
-- ✅ **Responsive Design** - Optimized for desktop, tablet, and mobile devices
-- ✅ **Premium UI/UX** - Modern light theme with smooth animations and rounded cards
+This project is currently implemented as a **full-stack MVP** with:
+- a static frontend built with HTML, CSS, and JavaScript
+- a Node.js + Express backend
+- MongoDB Atlas for product persistence
+- deployment for both frontend and backend
 
 ---
 
-## 🚀 Setup & Run Instructions
+## Live Demo
 
-### Prerequisites
-- Any modern web browser (Chrome, Firefox, Safari, Edge)
-- No server or database setup required
+- **Frontend:** `https://kickstore-frontend.onrender.com`
+- **Backend API:** `https://kickstore-backend.onrender.com`
 
-### Step 1: Clone or Download
+> Note: If the backend is on a free hosting tier, the first API request may take a few seconds to respond.
+
+---
+
+## Features Implemented
+
+- ✅ Product storage with 15+ football merchandise items
+- ✅ Search by product name
+- ✅ Case-insensitive search behavior
+- ✅ Category filtering
+- ✅ Dynamic result rendering in a product grid
+- ✅ Empty state handling for no matches found
+- ✅ Initial backend fetch with local in-memory filtering for faster interaction
+- ✅ Responsive design for desktop, tablet, and mobile
+- ✅ Frontend and backend deployment
+
+---
+
+## Tech Stack
+
+### Frontend
+- HTML5
+- CSS3
+- Vanilla JavaScript (ES6)
+- Google Fonts (Poppins)
+
+### Backend
+- Node.js
+- Express.js
+- MongoDB Atlas
+- Mongoose
+- dotenv
+- CORS
+
+### Tooling
+- nodemon
+- Git & GitHub
+- Render (deployment)
+
+---
+
+## Project Structure
+
+```text
+KickStore/
+├── index.html              # Main frontend page
+├── style.css               # UI styling and responsive layout
+├── script.js               # Search, filtering, rendering, API calls
+├── data.js                 # Local fallback dataset
+├── images/                 # Product images
+└── backend/
+    ├── server.js           # Express server and API routes
+    ├── seed.js             # Seeds MongoDB with initial product data
+    ├── models/
+    │   └── Product.js      # Mongoose product schema
+    ├── package.json
+    └── .env                # Local environment variables (not committed)
+```
+
+---
+
+## Architecture
+
+### High-Level Flow
+
+1. The frontend loads in the browser.
+2. On startup, it fetches the product list from the Express backend.
+3. The backend reads product data from MongoDB Atlas.
+4. The frontend stores the fetched results in memory and performs search/filter operations locally for faster updates.
+5. If the backend is unavailable, the frontend falls back to the local dataset in `data.js`.
+
+### Layers
+
+#### 1. Data Layer
+- `data.js` provides a local fallback dataset.
+- MongoDB Atlas stores the persistent product collection.
+- `Product.js` defines the product schema using Mongoose.
+
+#### 2. Frontend Layer
+- `index.html` provides the main page structure.
+- `style.css` handles layout, responsiveness, and UI styling.
+- `script.js` handles fetching, state management, filtering, and rendering.
+
+#### 3. Backend Layer
+- `server.js` exposes API endpoints for retrieving product data.
+- `seed.js` inserts the initial dataset into MongoDB.
+- Express + Mongoose handle API logic and persistence.
+
+---
+
+## API Endpoints
+
+### Get all products
+```http
+GET /api/products
+```
+
+### Search products
+```http
+GET /api/products/search?q=term&category=CategoryName
+```
+
+Example:
+```http
+GET /api/products/search?q=argentina&category=Jerseys
+```
+
+---
+
+## Setup & Run Instructions
+
+You can run this project in two ways:
+
+### Option 1: Frontend-only mode
+This uses the local fallback dataset from `data.js`.
+
+#### Steps
 ```bash
 git clone https://github.com/Saurabh-Yadav31/KickStore.git
 cd KickStore
 ```
 
-### Step 2: Open in Browser
-Simply open the `index.html` file in your web browser:
-- **Option A:** Double-click `index.html`
-- **Option B:** Right-click → "Open with" → Choose your browser
-- **Option C:** Drag `index.html` into your browser window
+Then open `index.html` in your browser.
 
-### Step 3: Start Using
-- Type in the search box to find products by name (e.g., "Argentina", "ball", "boots")
-- Click category buttons to filter by product type
-- Click "View All Products" in the empty state to reset your search
-
--No installation, build process, or server required!
+This mode works without backend or database setup.
 
 ---
 
-## 🛠️ Technology Stack
+### Option 2: Full-stack local mode
 
-### Frontend
-- **HTML5** - Semantic markup and accessible structure
-- **CSS3** - Modern styling with CSS variables, gradients, flexbox, and grid
-  - Poppins font from Google Fonts for premium typography
-  - Responsive design with media queries
-  - Smooth transitions and hover effects
-- **Vanilla JavaScript (ES6)** - No frameworks or libraries
-  - Event listeners for search and filtering
-  - DOM manipulation and dynamic rendering
-  - State management for search terms and active filters
+#### Prerequisites
+- Node.js installed
+- MongoDB Atlas connection string
+- Modern web browser
 
-### Design & UX
-- **Light Theme** - Professional blue and white color scheme (#3c8dff accent)
-- **Rounded Components** - Pill-style buttons, rounded cards (28px border-radius)
-- **Shadow & Depth** - Layered design with premium box shadows
-- **Interactive States** - Hover animations and active state indicators
+#### 1. Clone the repository
+```bash
+git clone https://github.com/Saurabh-Yadav31/KickStore.git
+cd KickStore
+```
 
----
-
-## Backend & Database (Added)
-The project was extended with a lightweight Node.js + Express backend and MongoDB Atlas for persistent storage while keeping the existing static frontend intact.
-
-- **Tech stack (backend):** Node.js, Express, Mongoose, MongoDB Atlas, dotenv, CORS, nodemon
-- **Why added:** persistence, centralized search, multi-client support, easier deployment, and seedable dataset
-- **Frontend performance:** the app now fetches the full product list once on startup, caches it locally in memory, and uses local filtering for faster category and search updates.
-
-Files added or changed for backend:
-- `backend/server.js` — Express server, API routes, and MongoDB connection
-- `backend/models/Product.js` — Mongoose schema for products
-- `backend/seed.js` — One-time seeding script that loads products from `data.js` into MongoDB
-- `backend/package.json` — dependencies and `dev` script for `nodemon`
-- `backend/.env` (local, not committed) — `MONGODB_URI` and `PORT`
-
-How it works (high level):
-1. `backend/seed.js` connects to MongoDB, clears the `products` collection and inserts the product documents from `data.js`.
-2. `backend/server.js` connects to MongoDB with Mongoose and exposes two primary endpoints:
-  - `GET /api/products` — returns all products
-  - `GET /api/products/search?q=term&category=CategoryName` — full-text-ish name search (case-insensitive) with optional category filter
-3. The frontend calls these endpoints (via `fetch`) to show server-backed results; on fetch failure the frontend falls back to the local `data.js` dataset.
-
-4. The app now fetches the full product list once on startup and caches it in memory. Subsequent category changes and searches are handled locally by filtering the `allProducts` array, which reduces repeated backend round-trips and improves UI speed.
-
-5. The search input also uses a debounce helper for typing. This avoids firing too many requests or filter calculations too quickly and is especially useful for larger datasets.
-
-Seeding & run commands (local):
-```powershell
+#### 2. Install backend dependencies
+```bash
 cd backend
 npm install
-# create backend/.env with MONGODB_URI and PORT=5000
-node seed.js    # seeds the DB (one-time)
-npm run dev     # runs the server (nodemon)
-# API available at http://localhost:5000
 ```
 
-Notes and environment quirks:
-- Keep `backend/.env` out of version control. Create a `.env.example` locally with placeholders for reviewers.
-- If your MongoDB password contains special characters (e.g., `@`), percent-encode them in the `MONGODB_URI`.
-- Some environments require explicit DNS resolvers for SRV records; the backend includes a small workaround (`dns.setServers(['8.8.8.8','8.8.4.4'])`) used when SRV lookups fail locally.
+#### 3. Create environment variables
+Create a `backend/.env` file:
 
-Why this improves the app (benefits vs previous static-only version):
-- **Persistence:** product data is stored centrally and survives restarts, making the app realistic for real users.
-- **Centralized search & consistency:** all clients query the same dataset and receive identical, up-to-date results.
-- **Scalability:** moving search to a backend makes it easier to add indexes, caching, pagination, and more advanced queries.
-- **Deployability:** backend + DB can be deployed independently (Render/Heroku/Cloud) and the frontend can point to the deployed API.
-- **Seedable dataset:** `seed.js` makes it easy to reproduce the dataset on any environment or CI job.
-
-
-## 📋 Architecture
-### File Structure
-```
-KickStore/
-├── index.html       # Main HTML structure (frontend)
-├── style.css        # Complete styling & responsiveness
-├── script.js        # Search and filter logic (frontend)
-├── data.js          # Local product dataset (fallback)
-├── images/          # Product images (AVIF & WebP formats)
-└── backend/         # Node.js + Express backend (optional)
-    ├── server.js
-    ├── seed.js
-    ├── models/Product.js
-    └── package.json
+```env
+MONGODB_URI=your_mongodb_connection_string
+PORT=5000
 ```
 
-### Component Architecture
+#### 4. Seed the database
+```bash
+node seed.js
+```
 
-#### 1. **Data Layer** (data.js + MongoDB)
-- Local fallback: `data.js` exports a static dataset used when no backend is available.
-- Server-backed: when the backend is running, product data is persisted in MongoDB (collection: `products`) and modeled with the `Product` Mongoose schema.
+#### 5. Start the backend
+```bash
+npm run dev
+```
 
-#### 2. **UI Layer** (index.html)
-- Sticky header with search form
-- Category filter buttons
-- Results header with count
-- Product grid for displaying cards
-- Empty state fallback
+#### 6. Run the frontend
+Open `index.html` in your browser.
 
-#### 3. **Logic Layer** (script.js)
-- **Primary behavior:** the frontend loads all products once from the backend, caches them locally, and then filters in memory for faster search and category switching. If the backend fetch fails, it falls back to `data.js`.
-- **Search Functionality:** debounced input that filters locally after the initial load and reduces repeated operations for larger datasets.
-- **Category Filtering:** local filtering for faster UI response while still preserving backend data persistence.
-- **Results Rendering:** Dynamic product card generation
-- **State Management:** `currentSearchTerm` and `selectedCategory`
-
-#### 4. **Backend Layer** (backend/server.js)
-- Express API provides:
-  - `GET /api/products` — list all products
-  - `GET /api/products/search?q=term&category=CategoryName` — case-insensitive name search with optional category filter
-- `backend/seed.js` seeds MongoDB from `data.js` and is idempotent for reproducible environments.
-- Uses Mongoose for schema enforcement, `dotenv` for config, and `cors` to allow the static frontend to query the API.
-
-#### 5. **Styling Layer** (style.css)
-- CSS Variables for consistent theming
-- Mobile-first responsive approach
-- Accessibility-first design patterns
-- Smooth transitions and micro-interactions
 ---
 
-## 📐 Assumptions Made During Development
+## How to Use
 
+- Type in the search input to search by product name.
+- Click category buttons to filter products.
+- Use the reset option in the empty state to return to the full product list.
 
-1. **Dual Data Sources (updated)** - The app supports both a local static dataset (`data.js`) and a server-backed MongoDB dataset. When the backend is running, the frontend prefers server results; otherwise it falls back to `data.js`.
+Example searches:
+- `Argentina`
+- `ball`
+- `boots`
 
-2. **Case-Insensitive Search** - Both client-side and server-side searches are case-insensitive; server search uses a regex-based name match.
+---
 
-3. **No User Authentication (current)** - The backend currently exposes read-only endpoints without authentication for demo purposes. Production deployments should add auth and input validation.
+## Assumptions Made
 
-4. **Responsive Design** - The app adapts to all screen sizes using CSS media queries (3-column desktop, 2-column tablet, 1-column mobile).
+1. The application focuses on **product discovery/search**, not checkout or account management.
+2. Search is case-insensitive.
+3. The current backend exposes **read-only product endpoints** only.
+4. The frontend fetches products once and then filters locally in memory for faster interaction.
+5. If the backend is unavailable, the frontend can still work with the fallback dataset in `data.js`.
+6. The project targets modern browsers that support ES6 and modern CSS features.
 
-5. **Modern Browser Support** - The app uses ES6 JavaScript and CSS3 features supported by all modern browsers.
+---
 
-6. **No Payment Processing** - This is a UI/UX demonstration. No payment gateway is integrated.
+## Validation & Error Handling
 
-7. **Persistence (updated)** - When seeded, product information persists in MongoDB and survives server restarts; `data.js` remains useful as a reproducible local snapshot and fallback.
+- Displays an empty state when no products match the current search/filter.
+- Provides a reset action to recover from no-result states.
+- Falls back to local product data if backend fetching fails.
+- Uses local filtering after the initial fetch to reduce unnecessary repeated requests.
 
 ---
 
 ## 🤖 AI-Assisted Development
 
-### AI Tools Used
+### Tools Used
+- **Perplexity AI** — used for research, architecture decisions, and debugging help
+- **GitHub Copilot** — used for code completions, boilerplate, and refactoring support
 
-#### **1. Perplexity AI**
-- **Purpose:** Research, design inspiration, and initial architecture planning
-- **How It Helped:**
-  - Researched modern e-commerce UI patterns and best practices
-  - Provided guidance on responsive design principles
-  - Suggested accessibility features and WCAG compliance
-  - Helped define the product schema and data structure
-  - Offered recommendations for premium UI design trends
+### How They Helped
 
-#### **2. GitHub Copilot**
-- **Purpose:** Code generation, refinement, and inline development assistance
-- **How It Helped:**
-  - Generated boilerplate HTML structure with semantic markup
-  - Created CSS classes and styling implementations
-  - Assisted with JavaScript function creation (filter, search, render logic)
-  - Provided inline code completions and suggestions
-  - Helped refactor and optimize event listeners
-  - Suggested performance improvements and best practices
+I used Perplexity to research UI patterns, plan the backend architecture, and debug deployment issues like CORS and MongoDB Atlas connection errors. It was also useful for quickly verifying documentation without switching between many tabs.
 
-### How AI Accelerated Development
+GitHub Copilot helped with repetitive coding tasks like generating product card HTML, writing event listeners, and scaffolding Express routes. It sped up the initial setup and let me focus more on implementation decisions.
 
-1. **Rapid Prototyping** - AI generated initial code structure in minutes instead of hours
-2. **Design Inspiration** - Perplexity research led to premium, modern UI choices
-3. **Code Quality** - Copilot suggestions followed ES6 best practices and clean code principles
-4. **Problem Solving** - AI provided quick solutions for responsive design challenges
-5. **Productivity** - 60-70% faster development compared to manual coding
+Overall, AI tools reduced the time I spent on boilerplate and research. That gave me more time to focus on frontend state, local filtering, backend fallback logic, and UI refinement.
 
 ### Challenges Encountered
 
-1. **AI Inconsistency** - Initial suggestions sometimes required refinement for specific use cases
-2. **Over-reliance Risk** - Had to validate AI suggestions rather than using them blindly
-3. **Styling Precision** - CSS fine-tuning required manual adjustments for pixel-perfect alignment
-4. **Image Sizing** - Product images needed consistent heights; AI suggestions required iteration
-5. **Search Logic** - Initial filtering logic needed optimization for performance
-6. **Responsive Breakpoints** - Mobile responsiveness required testing and manual CSS adjustments
+**Inconsistent outputs:** The same kind of prompt sometimes produced different results across sessions. Copilot would also suggest different implementations depending on the surrounding code, so I learned to review every suggestion instead of accepting it blindly.
+
+**Prompt interpretation:** Early prompts like “make the search better” gave generic results. More specific prompts worked much better, for example asking for local filtering from a cached array with debounce support.
+
+**Design iteration:** AI suggestions for layout and styling were useful, but not always polished. Some ideas looked fine in isolation but needed manual adjustments for spacing, card sizing, typography, and mobile responsiveness.
+
+**Validation gap:** AI-generated code usually handled the happy path well, but it sometimes missed edge cases. For example, I had to add the fallback to local data manually after testing backend failures.
+
+**Over-accepting suggestions:** At first I accepted Copilot suggestions too quickly, which introduced a few subtle bugs. After that, I started reviewing each suggestion carefully before using it.
 
 ---
 
-## 🎯 Evaluation Against Criteria
+## Trade-offs / Limitations
 
-### ✅ Functionality & Completeness
-- All core requirements implemented (store products, search, display, handle not found)
-- Real-time search with instant filtering
-- Multiple category filters working seamlessly
-- Edge cases handled (empty results, no matches)
-
-### ✅ Code Quality & Organization
-- Clean, semantic HTML structure
-- Well-organized CSS with variables and logical sections
-- Readable, commented JavaScript with clear function purposes
-- Modular approach: data, UI, and logic separated
-
-### ✅ Validation & Error Handling
-- Empty state displays when no results found
-- Reset button provides recovery from failed searches
-- User-friendly error messaging
-- Graceful handling of edge cases
-
-### ✅ User Experience
-- Intuitive search interface with rounded, modern design
-- Smooth animations and hover effects
-- Responsive design works flawlessly on all devices
-- Fast, real-time filtering (no lag or delays)
-- Premium visual hierarchy and typography
-
-### ✅ AI-Assisted Development
-- Documented use of Perplexity and GitHub Copilot
-- Explained how AI tools accelerated development
-- Identified and resolved AI-related challenges
-- Maintained code quality despite AI assistance
-
-### ✅ Documentation & Clarity
-- Comprehensive README with all deliverables
-- Clear setup instructions
-- Detailed technology stack
-- Architecture explanation with file structure
-- Assumptions clearly listed
+- The current application supports read-only product browsing and search.
+- There is no authentication, cart, checkout flow, or admin product management.
+- Search is implemented with simple case-insensitive matching rather than advanced indexing or fuzzy search.
+- The frontend is intentionally lightweight and framework-free for simplicity.
 
 ---
 
-## 🔮 Future Enhancements (v2.0+)
+## Future Improvements
 
-
-- Completed / in-progress: Backend API + MongoDB storage (seed + basic search endpoints) — implemented in `backend/`
-- Next backend improvements:
-  - Add authentication & authorization for admin actions
-  - Add indexing on searchable fields (`name`, `category`) and pagination for large lists
-  - Add input validation and rate limiting
-  - Add caching (Redis) for high-volume search
-  - Add an admin UI or GraphQL layer for product management
-- Product features still planned:
-  - Shopping cart & checkout flow
-  - Product reviews and ratings
-  - Admin dashboard and product CRUD
-  - Analytics and telemetry for product popularity
+- Add product pagination for larger datasets
+- Add backend-side validation and rate limiting
+- Add indexing on searchable fields
+- Add admin product management
+- Add authentication for protected actions
+- Add cart and checkout flow
 
 ---
 
-## 📞 Support & Questions
+## Evaluation Notes
 
-For issues, suggestions, or questions about the application, please open a GitHub issue or contact the development team.
+This submission was built to satisfy the assignment requirements:
+- store product list
+- search by name
+- display results
+- handle not-found cases
 
----
-
-## 📄 License
-
-This project is created for educational and assignment purposes. Free to use and modify.
-
----
-
-## ✍️ Author Notes
-
-KickStore demonstrates the power of combining modern web technologies with AI-assisted development tools. While built with current limitations (local storage, no backend), it showcases professional-grade UI/UX design and clean code practices that scale to enterprise applications.
-
-**Version:** 1.0 (Initial Release)  
-**Last Updated:** June 2026  
-**Status:** Active Development (Minor updates in progress)
+In addition, I included category filtering, responsive UI improvements, backend persistence, and deployment to present the solution as a polished, production-leaning MVP while keeping the core assignment scope intact.
 
 ---
 
-**Thank you for reviewing KickStore! ⚽**
+## License
+
+This project was created for educational and assignment purposes.
+
+---
+
+## Author
+
+Developed by **Saurabh Yadav**
