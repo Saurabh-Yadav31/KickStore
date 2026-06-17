@@ -17,7 +17,7 @@ let selectedCategory = "All";
 let currentSearchTerm = "";
 let products = [];
 let allProducts = [];
-const apiBaseUrl = "http://localhost:5000";
+const apiBaseUrl = "https://kickstore-backend.onrender.com"; // Update with your backend URL
 
 // ---------- HELPER: FORMAT PRICE ----------
 function formatPrice(price) {
