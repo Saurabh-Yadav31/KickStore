@@ -7,6 +7,7 @@ const searchForm = document.getElementById("search-form");
 const searchInput = document.getElementById("search-input");
 const categoryButtons = document.querySelectorAll("#category-filters button");
 const productsGrid = document.getElementById("products-grid");
+const loadingState = document.getElementById("loading-state");
 const resultsCount = document.getElementById("results-count");
 const emptyState = document.getElementById("empty-state");
 const resetButton = document.getElementById("reset-button");
@@ -15,6 +16,7 @@ const resetButton = document.getElementById("reset-button");
 let selectedCategory = "All";
 let currentSearchTerm = "";
 let products = [];
+let allProducts = [];
 const apiBaseUrl = "http://localhost:5000";
 
 // ---------- HELPER: FORMAT PRICE ----------
@@ -104,6 +106,18 @@ function updateUI() {
   updateResultsCount(filteredProducts.length);
 }
 
+function setLoading(isLoading, message = "Starting the app... please wait a moment.") {
+  if (!loadingState) return;
+  const msg = loadingState.querySelector("p");
+  if (msg) msg.textContent = message;
+
+  if (isLoading) {
+    loadingState.classList.remove("hidden");
+  } else {
+    loadingState.classList.add("hidden");
+  }
+}
+
 // ---------- SEARCH INPUT ----------
 // Debounce helper
 function debounce(fn, wait) {
@@ -118,29 +132,29 @@ function debounce(fn, wait) {
 async function performSearch() {
   const q = currentSearchTerm.trim();
   const category = selectedCategory;
+  setLoading(true, "Loading products for the selected filters...");
 
-  // Build endpoint
-  const params = new URLSearchParams();
-  if (q) params.set('q', q);
-  if (category && category !== 'All') params.set('category', category);
+  products = allProducts.filter((product) => {
+    const matchesCategory =
+      selectedCategory === "All" || product.category === selectedCategory;
 
-  const url = params.toString()
-    ? `${apiBaseUrl}/api/products/search?${params.toString()}`
-    : `${apiBaseUrl}/api/products`;
+    const matchesSearch =
+      product.name.toLowerCase().includes(currentSearchTerm.toLowerCase());
 
-  try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('API error');
-    products = await res.json();
-  } catch (err) {
-    console.warn('Search failed, using local data fallback', err);
-    if (typeof window !== 'undefined' && window.productsData) products = window.productsData;
-  }
+    return matchesCategory && matchesSearch;
+  });
 
+  setLoading(false);
   updateUI();
 }
 
 const debouncedSearch = debounce(performSearch, 300);
+
+searchForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  currentSearchTerm = searchInput.value;
+  performSearch();
+});
 
 searchInput.addEventListener('input', () => {
   currentSearchTerm = searchInput.value;
@@ -149,17 +163,22 @@ searchInput.addEventListener('input', () => {
 
 // ---------- FETCH PRODUCTS ----------
 async function fetchProducts() {
+  setLoading(true, "Starting the app... please wait a moment.");
   try {
     const response = await fetch(`${apiBaseUrl}/api/products`);
     if (!response.ok) {
       throw new Error("API response not OK");
     }
     products = await response.json();
+    allProducts = products;
   } catch (error) {
     console.warn("Failed to load products from backend, using local data.", error);
     if (typeof window !== "undefined" && window.productsData) {
       products = window.productsData;
+      allProducts = window.productsData;
     }
+  } finally {
+    setLoading(false);
   }
   updateUI();
 }

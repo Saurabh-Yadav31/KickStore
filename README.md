@@ -18,6 +18,7 @@ This is an **initial version** with core functionality implemented. Future enhan
 - ✅ **Real-time Search** - Case-insensitive product name search with instant results
 - ✅ **Category Filtering** - Filter by Jerseys, Footballs, Boots, Scarves & Caps, and Collectibles
 - ✅ **Dynamic Results Display** - Product grid with detailed cards showing name, price, stock status, and ratings
+- ✅ **One-time fetch + local filtering** - Initial backend load then local search/category filtering for faster interaction
 - ✅ **Empty State Handling** - User-friendly "No Match Found" message with reset functionality
 - ✅ **Responsive Design** - Optimized for desktop, tablet, and mobile devices
 - ✅ **Premium UI/UX** - Modern light theme with smooth animations and rounded cards
@@ -77,6 +78,7 @@ The project was extended with a lightweight Node.js + Express backend and MongoD
 
 - **Tech stack (backend):** Node.js, Express, Mongoose, MongoDB Atlas, dotenv, CORS, nodemon
 - **Why added:** persistence, centralized search, multi-client support, easier deployment, and seedable dataset
+- **Frontend performance:** the app now fetches the full product list once on startup, caches it locally in memory, and uses local filtering for faster category and search updates.
 
 Files added or changed for backend:
 - `backend/server.js` — Express server, API routes, and MongoDB connection
@@ -91,6 +93,10 @@ How it works (high level):
   - `GET /api/products` — returns all products
   - `GET /api/products/search?q=term&category=CategoryName` — full-text-ish name search (case-insensitive) with optional category filter
 3. The frontend calls these endpoints (via `fetch`) to show server-backed results; on fetch failure the frontend falls back to the local `data.js` dataset.
+
+4. The app now fetches the full product list once on startup and caches it in memory. Subsequent category changes and searches are handled locally by filtering the `allProducts` array, which reduces repeated backend round-trips and improves UI speed.
+
+5. The search input also uses a debounce helper for typing. This avoids firing too many requests or filter calculations too quickly and is especially useful for larger datasets.
 
 Seeding & run commands (local):
 ```powershell
@@ -145,9 +151,9 @@ KickStore/
 - Empty state fallback
 
 #### 3. **Logic Layer** (script.js)
-- **Primary behavior:** the frontend requests search/results from the backend endpoints when available and falls back to client-side filtering from `data.js` on network failure.
-- **Search Functionality:** debounced input that queries `GET /api/products/search?q=...&category=...`
-- **Category Filtering:** either client-side or server-side depending on availability
+- **Primary behavior:** the frontend loads all products once from the backend, caches them locally, and then filters in memory for faster search and category switching. If the backend fetch fails, it falls back to `data.js`.
+- **Search Functionality:** debounced input that filters locally after the initial load and reduces repeated operations for larger datasets.
+- **Category Filtering:** local filtering for faster UI response while still preserving backend data persistence.
 - **Results Rendering:** Dynamic product card generation
 - **State Management:** `currentSearchTerm` and `selectedCategory`
 
