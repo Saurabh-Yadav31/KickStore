@@ -208,21 +208,33 @@ Example searches:
 
 ## Assumptions Made
 
-1. The application focuses on **product discovery/search**, not checkout or account management.
-2. Search is case-insensitive.
-3. The current backend exposes **read-only product endpoints** only.
-4. The frontend fetches products once and then filters locally in memory for faster interaction.
-5. If the backend is unavailable, the frontend can still work with the fallback dataset in `data.js`.
-6. The project targets modern browsers that support ES6 and modern CSS features.
+### 1. Product Discovery Focus (Business MVP Strategy)
+* **Technical Perspective:** The current application logic supports a read-only architecture. There is no active session state, shopping cart system, user authentication, or checkout backend routes.
+* **Business Perspective:** The project functions as a high-efficiency Minimum Viable Product (MVP) optimized strictly for the top of the sales funnel (Product Discovery). By focusing capital and development time on search speed and inventory visibility first, we validate market demand before investing overhead into complex payment systems.
+
+### 2. Low-Friction Case-Insensitive Search
+* **Technical Perspective:** The search string query ignores character casing transformations during execution. 
+* **Business Perspective:** Users expect search bars to be flexible. Eliminating case sensitivity reduces user effort and friction. This matches standard retail behaviors seen on platforms like Flipkart, where searching for "BOOTS", "Boots", or "boots" yields the exact same products.
+
+### 3. Dual-Layer Data Availability Strategy
+* **Technical Perspective:** The client makes a single initial API request to fetch products on startup. It caches this array in local memory for subsequent frontend filtering. If the database API fails, the application automatically catches the error and loads a static backup array from `data.js`.
+* **Business Perspective:** In e-commerce, slow load times kill conversion rates, and server downtime means instant lost revenue. Caching data locally provides instantaneous search results for the user, lowering platform bounce rates. Meanwhile, the local fallback dataset ensures high availability—keeping our digital storefront open and browsable even if the cloud database goes offline.
 
 ---
 
 ## Validation & Error Handling
 
-- Displays an empty state when no products match the current search/filter.
-- Provides a reset action to recover from no-result states.
-- Falls back to local product data if backend fetching fails.
-- Uses local filtering after the initial fetch to reduce unnecessary repeated requests.
+### 1. Intelligent Empty States (Preventing Search Abandonment)
+* **Technical Perspective:** The interface detects when the filtered product array length equals zero. It conditionally hides the product grid and injects a dedicated "No Match Found" container into the DOM, complete with an event listener to reset the search state.
+* **Business Perspective:** On platforms like Swiggy, a completely blank search error is a dead end that causes immediate user abandonment. Our system handles missing items gracefully by explicitly telling the user what happened and providing an instant "Reset" call-to-action button. This acts as a recovery loop to pull the customer right back into our active shopping funnel.
+
+### 2. Input Sanitization & Data Normalization
+* **Technical Perspective:** All user inputs are stripped of leading/trailing accidental spaces using string manipulation methods before executing the search logic. The search inputs are evaluated as plain string text to prevent unauthorized script injections.
+* **Business Perspective:** Customers often copy-paste text or accidentally add spaces while typing on mobile devices. Normalizing this input ensures the application remains highly forgiving of messy human inputs, preventing unnecessary "product not found" errors that lead to lost sales.
+
+### 3. Graceful Degradation & Network Fail-safes
+* **Technical Perspective:** The frontend fetch request is wrapped inside a robust try/catch block. If the API returns a non-200 status code, fails to connect to MongoDB Atlas, or encounters network timeouts on the hosting platform, the UI catches the error and seamlessly initializes using the hardcoded `data.js` catalog.
+* **Business Perspective:** This technical fallback directly protects the brand's reputation. Instead of displaying a broken error code to the customer, the application downgrades gracefully, ensuring the user experiences a completely working, polished store catalog under any network condition.
 
 ---
 
